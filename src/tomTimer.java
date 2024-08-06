@@ -10,7 +10,7 @@ public class tomTimer implements ActionListener {
 
     //Creating the time label, the display for the clock
     JLabel timeLabel = new JLabel();
-    int seconds = 0, minutes = 0, elapsedTime = 0;
+    int seconds = 0, minutes = 0, elapsedTime = 1440000;
     int pomMinLimit = 25, sBreakLimit = 5, eBreakLimit = 30;
     String secStr = String.format("%02d", seconds);
     String minStr = String.format("%02d", minutes);
@@ -88,7 +88,21 @@ public class tomTimer implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == startButton){
-            start();
+            if(started == false){
+                started = true;
+                startButton.setText("Stop");
+                start();
+            } else {
+                started = false;
+                startButton.setText("Start");
+                stop();
+            }
+        }
+
+        if (e.getSource() == resetButton){
+            started = false;
+            startButton.setText("Start");
+            reset();
         }
     }
 
@@ -96,9 +110,16 @@ public class tomTimer implements ActionListener {
         timer.start();
     }
     void stop(){
-
+        timer.stop();
     }
     void reset(){
+        timer.stop();
+        elapsedTime = 0;
+        seconds = 0;
+        minutes = 0;
 
+        secStr = String.format("%02d", seconds);
+        minStr = String.format("%02d", minutes);
+        timeLabel.setText(minStr + " : " + secStr);
     }
 }
