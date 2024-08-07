@@ -8,10 +8,29 @@ public class tomTimer implements ActionListener {
     //Creating the label that defines the mode of the cycle
     JLabel mode = new JLabel();
 
+    //Here, we are creating a circular linkedList that will harbor the different cycle modes.
+    class Node {
+        String modeData;
+        Node next;
+
+        Node(String modeData){
+            this.modeData = modeData;
+            this.next = null;
+        }
+    }
+    public void setupNodes(){
+    Node pomMode = new Node("Pomodoro Time!");
+    Node sBreakMode = new Node("Break Time!");
+    Node eBreakMode = new Node("Extended Break!"); // Now to connect the nodes
+    pomMode.next = sBreakMode;
+    sBreakMode.next = eBreakMode;
+    eBreakMode.next = pomMode;
+    }
+
     //Creating the time label, the display for the clock
     JLabel timeLabel = new JLabel();
     int seconds = 0, minutes = 0, elapsedTime = 1440000;
-    int pomMinLimit = 25, sBreakLimit = 5, eBreakLimit = 30;
+    int pomLimit = 25, sBreakLimit = 5, eBreakLimit = 30;
     String secStr = String.format("%02d", seconds);
     String minStr = String.format("%02d", minutes);
 
@@ -21,7 +40,10 @@ public class tomTimer implements ActionListener {
            elapsedTime += 1000;
            seconds = (elapsedTime / 1000) % 60;
            secStr = String.format("%02d", seconds);
-           minutes = (elapsedTime / 60000) % pomMinLimit;
+           minutes = (elapsedTime / 60000) % pomLimit;
+           if (minutes == 0){
+
+           }
            minStr = String.format("%02d", minutes);
 
            timeLabel.setText(minStr + " : " + secStr);
@@ -34,10 +56,6 @@ public class tomTimer implements ActionListener {
 
     //Creating a reset button to reset the timer
     JButton resetButton = new JButton("Reset");
-    boolean beenReset = false;
-
-    //Creating a configure button to configure the timer's settings
-    //JButton configButton = new JButton("Config");
 
     //Creating cycle label that keeps track of the # of Pomodoros
     int pomCounter = 1;
@@ -45,8 +63,8 @@ public class tomTimer implements ActionListener {
 
     tomTimer(){
         //Setting details for the mode
-        mode.setText("Pomodoro Time!");
-        mode.setBounds(130, 50, 200, 50);
+        mode.setText("Ready?");
+        mode.setBounds(170, 50, 200, 50);
         mode.setFont(new Font("Tahoma", Font.PLAIN, 20));
 
         //Setting the details for the clock
