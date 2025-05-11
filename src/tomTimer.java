@@ -11,17 +11,20 @@ public class tomTimer implements ActionListener {
     //Here, we are creating a circular linkedList that will harbor the different cycle modes.
     class Node {
         String modeData;
+        int limit;
         Node next;
 
-        Node(String modeData){
+        // When creating a new node, we enter text describing the mode
+        Node(String modeData, int limit){
             this.modeData = modeData;
+            this.limit = limit;
             this.next = null;
         }
     }
     public void setupNodes(){
-    Node pomMode = new Node("Pomodoro Time!");
-    Node sBreakMode = new Node("Break Time!");
-    Node eBreakMode = new Node("Extended Break!"); // Now to connect the nodes
+    Node pomMode = new Node("Pomodoro Time!", 25);
+    Node sBreakMode = new Node("Break Time!", 5);
+    Node eBreakMode = new Node("Extended Break!", 30); // Now to connect the nodes
     pomMode.next = sBreakMode;
     sBreakMode.next = eBreakMode;
     eBreakMode.next = pomMode;
@@ -118,6 +121,7 @@ public class tomTimer implements ActionListener {
         }
 
         if (e.getSource() == resetButton){
+            mode.setText("Ready?");
             started = false;
             startButton.setText("Start");
             reset();
