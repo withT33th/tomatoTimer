@@ -2,103 +2,103 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class tomTimer implements ActionListener {
-    JFrame frame = new JFrame();
+public class tomTimer {
+    // Creating frames, pane and panels
+    private JFrame frame = new JFrame("Pomodoro Timer");
+    private JPanel cards = new JPanel(new CardLayout());
+    private JPanel pomPanel = new JPanel();
+    private JPanel sPanel = new JPanel();
+    private JPanel lPanel = new JPanel();
 
-    //Creating the label that defines the mode of the cycle
-    JLabel mode = new JLabel();
+    // Creating and setting labels
+    private JLabel pLabel = new JLabel("Pomodoro time!");
+    private JLabel sLabel = new JLabel("Short Break!");
+    private JLabel lLabel = new JLabel("Long Break!");
 
-    //Creating the time label, the display for the clock
-    JLabel timeLabel = new JLabel();
-    int seconds = 0, minutes = 0, elapsedTime = 0;
-    int pomMinLimit = 25, sBreakLimit = 5, eBreakLimit = 30;
-    String secStr = String.format("%02d", seconds);
-    String minStr = String.format("%02d", minutes);
+    // Creating the display for the clock
+    private JLabel timeLable = new JLabel();
+    int sec = 0, min = 0, elapsed = 0;
+    int pomLim = 25, sLim = 5, eLim = 30;
 
-    //then the functionality of the clock
-    Timer timer = new Timer(1000, new ActionListener(){
-       public void actionPerformed(ActionEvent e){
-           elapsedTime += 1000;
-           seconds = (elapsedTime / 1000) % 60;
-           secStr = String.format("%02d", seconds);
-           minutes = (elapsedTime / 60000) % pomMinLimit;
-           minStr = String.format("%02d", minutes);
+    // Functionality of the timer clock
 
-           timeLabel.setText(minStr + " : " + secStr);
-       }
-    });
+    private void setLabels(JLabel l, JPanel p){
+        l.setBounds(130, 50, 200, 50);
+        l.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        p.add(l);
+    }
 
-    //Creating the start button
-    JButton startButton = new JButton("Start");
-    boolean started = false;
+    // Creating a method to help create buttons
+    // Passing in the button text and the actionCommand
+    private JButton createButton(String name, String comm){
+        JButton b = new JButton(name);
+        b.setActionCommand(comm);
+        b.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        b.setFocusable(false);
 
-    //Creating a reset button to reset the timer
-    JButton resetButton = new JButton("Reset");
-    boolean beenReset = false;
+        if (comm.equals("START")){
+            // Add an ActionListener that starts and stops the timer counting
+            b.setBounds(100, 200, 100, 50);
+        } else if (comm.equals("RESET")){
+            // ActionListener that resets timer (or whole pomodoro session)
+            b.setBounds(150, 100, 100 ,50);
+        } else if (comm.equals("SKIP")){
+            // ActionListener that skips to the next card
+            b.setBounds(200, 200, 100, 50);
 
-    //Creating a configure button to configure the timer's settings
-    //JButton configButton = new JButton("Config");
+        }
+        b.addActionListener(e -> new bListener());
+        return b;
+    }
 
-    //Creating cycle label that keeps track of the # of Pomodoros
-    int pomCounter = 1;
-    JLabel cycle = new JLabel("Pom #" + pomCounter);
+    // Implementing the button listener. Performing different actions depending on the action command
+    private class bListener implements ActionListener{
+        public void actionPerformed(ActionEvent e){
+            String comm = e.getActionCommand();
 
-    tomTimer(){
-        //Setting details for the mode
-        mode.setText("Pomodoro Time!");
-        mode.setBounds(130, 50, 200, 50);
-        mode.setFont(new Font("Tahoma", Font.PLAIN, 20));
+            if (comm.equals("START")){
+                // Starts and stops the timer counting
+            } else if (comm.equals("RESET")){
+                // Resets the timer (or whole pomodoro session)
+            } else if (comm.equals("SKIP")){
+                // Skips to the next card
+            }
+        }
 
-        //Setting the details for the clock
-        timeLabel.setText(minStr + " : " + secStr);
-        timeLabel.setBounds(100, 100, 200, 100);
-        timeLabel.setFont(new Font("Tahoma", Font.PLAIN, 40));
-        timeLabel.setBorder(BorderFactory.createBevelBorder(1));
-        timeLabel.setOpaque(true);
-        timeLabel.setHorizontalAlignment(JTextField.CENTER);
+    }
 
-        //Setting details for play/pause button
-        startButton.setBounds(100, 200, 100, 50);
-        startButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
-        startButton.setFocusable(false);
-        startButton.addActionListener(this);
-
-        //Setting details for the reset button
-        resetButton.setBounds(200, 200, 100, 50);
-        resetButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
-        resetButton.setFocusable(false);
-        resetButton.addActionListener(this);
-
-        //Setting details for cycle counter
-        cycle.setBounds(165, 250, 200, 50);
-        cycle.setFont(new Font("Tahoma", Font.PLAIN, 20));
-
-        //Adding items to the frame
-        frame.add(mode);
-        frame.add(timeLabel);
-        frame.add(startButton);
-        frame.add(resetButton);
-        frame.add(cycle);
+    // Creating GUI
+    private void prepareGUI(){
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 400);
         frame.setLayout(null);
+
+        cards.setBounds(0, 0, 400, 400);
+
+        // Nulling the default panel layout to read my bounds
+        pomPanel.setLayout(null);
+        sPanel.setLayout(null);
+        lPanel.setLayout(null);
+
+        // Calling setLabels to place the labels in the panels
+        setLabels(pLabel, pomPanel);
+        setLabels(sLabel, sPanel);
+        setLabels(lLabel, lPanel);
+
+        cards.setBounds(0, 0, 400, 400);
+        cards.add(pomPanel, "pom");
+        cards.add(sPanel, "short");
+        cards.add(lPanel, "long");
+
+        frame.add(cards);
+    }
+
+    public tomTimer(){
+        prepareGUI();
+    }
+
+    public void showPomTimer(){
         frame.setVisible(true);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == startButton){
-            start();
-        }
-    }
-
-    void start(){
-        timer.start();
-    }
-    void stop(){
-
-    }
-    void reset(){
-
-    }
 }
